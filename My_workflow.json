@@ -1,0 +1,157 @@
+{
+  "name": "Monitor de Cotações",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 30
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0],
+      "id": "75e7c8bb-1d47-454c-947d-913f836e6254",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL,BTC-BRL",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [220, 0],
+      "id": "dd448916-e0aa-45ae-904e-7ddcfcb46c8b",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\n\nconst moedas = [\n  { moeda: \"USD\", bid: parseFloat(data.USDBRL.bid), ask: parseFloat(data.USDBRL.ask), high: parseFloat(data.USDBRL.high), low: parseFloat(data.USDBRL.low), data: data.USDBRL.create_date, limite: 5.10 },\n  { moeda: \"BTC\", bid: parseFloat(data.BTCBRL.bid), ask: parseFloat(data.BTCBRL.ask), high: parseFloat(data.BTCBRL.high), low: parseFloat(data.BTCBRL.low), data: data.BTCBRL.create_date, limite: 410000 }\n];\n\nreturn moedas.map(m => ({ json: m }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [440, 0],
+      "id": "b026c298-7644-4e74-a95c-869e3d1fbda9",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "29af9d31-801d-492d-a475-bb5e2011d41c",
+              "leftValue": "={{ $json.ask }}",
+              "rightValue": "={{ $json.limite }}",
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [680, 0],
+      "id": "bb41053e-9a59-4e5f-86ee-50b75c72c4be",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "SEU_ID_PLANILHA_AQUI",
+          "mode": "list",
+          "cachedResultName": "Monitor de Cotações",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/SEU_ID_PLANILHA_AQUI/edit"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Folha1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/SEU_ID_PLANILHA_AQUI/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "moeda": "={{ $json.moeda }}",
+            "bid": "={{ $json.bid }}",
+            "ask": "={{ $json.ask }}",
+            "high": "={{ $json.high }}",
+            "low": "={{ $json.low }}",
+            "data": "={{ $json.data }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            { "id": "moeda", "displayName": "moeda", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "bid", "displayName": "bid", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "ask", "displayName": "ask", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "high", "displayName": "high", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "low", "displayName": "low", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "data", "displayName": "data", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true, "removed": false }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [860, -220],
+      "id": "a186241c-2346-4f0a-add1-c9ef5a439363",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SUA_CREDENCIAL_SHEETS",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "SEU_EMAIL_AQUI",
+        "subject": "={{ $json.moeda === 'USD' ? '⚠️ Dólar em alta — R$ ' + $json.ask : '🚀 Bitcoin rompeu R$ ' + $json.ask }}",
+        "message": "={{ $json.moeda === 'USD' ? '<h2>⚠️ Alerta Dólar</h2><p>O dólar ultrapassou R$ 5,10</p><p><b>Valor atual:</b> R$ ' + $json.ask + '</p><p><b>Máxima do dia:</b> R$ ' + $json.high + '</p><p><b>Data:</b> ' + $json.data + '</p>' : '<h2>🚀 Alerta Bitcoin</h2><p>O Bitcoin ultrapassou R$ 410.000</p><p><b>Valor atual:</b> R$ ' + $json.ask + '</p><p><b>Máxima do dia:</b> R$ ' + $json.high + '</p><p><b>Data:</b> ' + $json.data + '</p>' }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [1240, -140],
+      "id": "9c14f7b4-f497-4049-92d9-6d910d54cd78",
+      "name": "Gmail",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "SUA_CREDENCIAL_GMAIL",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": { "main": [[{ "node": "HTTP Request", "type": "main", "index": 0 }]] },
+    "HTTP Request": { "main": [[{ "node": "Code", "type": "main", "index": 0 }]] },
+    "Code": { "main": [[{ "node": "If", "type": "main", "index": 0 }]] },
+    "If": { "main": [[{ "node": "Google Sheets", "type": "main", "index": 0 }]] },
+    "Google Sheets": { "main": [[{ "node": "Gmail", "type": "main", "index": 0 }]] }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" },
+  "tags": []
+}
