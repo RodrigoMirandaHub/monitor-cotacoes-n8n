@@ -1,6 +1,6 @@
 # 📈 Monitor de Cotações com Alertas — N8N
-<img width="611" height="568" alt="Screenshot_4" src="https://github.com/user-attachments/assets/53a40cfe-58aa-44c0-a2a1-e0c157ca01cd" />
 
+<img width="1668" height="879" alt="Screenshot_3" src="https://github.com/user-attachments/assets/34a9193a-14d2-423f-8002-6e4c3258899c" />
 
 Automação completa que monitora cotações de USD e BTC em tempo real, registra histórico e envia alertas por e-mail quando os valores ultrapassam limites definidos.
 
@@ -27,7 +27,8 @@ Schedule Trigger (30min)
 → [false] sem ação
 
 ## ⚙️ Configuração
-<img width="1668" height="879" alt="Screenshot_3" src="https://github.com/user-attachments/assets/34a9193a-14d2-423f-8002-6e4c3258899c" />
+
+<img width="611" height="568" alt="Screenshot_4" src="https://github.com/user-attachments/assets/53a40cfe-58aa-44c0-a2a1-e0c157ca01cd" />
 1. Importe o workflow no N8N
 2. Configure as credenciais do Google Sheets e Gmail
 3. Ajuste os limites no nó **Code**:
