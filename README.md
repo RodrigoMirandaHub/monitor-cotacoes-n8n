@@ -29,6 +29,8 @@ Schedule Trigger (30min)
 ## ⚙️ Configuração
 
 <img width="611" height="568" alt="Screenshot_4" src="https://github.com/user-attachments/assets/53a40cfe-58aa-44c0-a2a1-e0c157ca01cd" />
+
+
 1. Importe o workflow no N8N
 2. Configure as credenciais do Google Sheets e Gmail
 3. Ajuste os limites no nó **Code**:
