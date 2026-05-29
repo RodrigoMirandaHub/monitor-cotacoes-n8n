@@ -41,6 +41,17 @@ Schedule Trigger (30min)
 **Assunto:** 🚀 Bitcoin rompeu R$ 411.500  
 **Corpo:** Valor atual, máxima do dia e data/hora
 
+💳 Integração Stripe via Webhook Endpoint que recebe eventos de pagamento em tempo real do Stripe, processa os dados e grava automaticamente no Google Sheets  evento, valor, moeda, status e timestamp.
+
+
+
+🔐 OAuth 2.0 na prática Implementei o fluxo completo de autenticação OAuth: troca de credenciais por token temporário, uso do Bearer token em chamadas autenticadas e entendimento do ciclo de renovação.
+
+☁️ Deploy em produção N8N rodando 24h na nuvem via Render com URL pública — não é mais só local.
+
+<img width="821" height="324" alt="Screenshot_28" src="https://github.com/user-attachments/assets/37e76e33-5538-4407-8cc3-e2233338c43d" />
+
+
 ## 👤 Autor
 
 Rodrigo Miranda — [LinkedIn](www.linkedin.com/in/rodrigo-h-miranda) | [GitHub](https://github.com/RodrigoMirandaHub)
